@@ -1,7 +1,5 @@
 import { useState, useMemo } from "react";
 import { ProductCard } from "@/components/ProductCard";
-import inventoryData from "@/data/inventory.json";
-import { Inventory } from "@/types/product";
 import { Input } from "@/components/ui/input";
 import {
   Select,
@@ -12,23 +10,26 @@ import {
 } from "@/components/ui/select";
 import { Switch } from "@/components/ui/switch";
 import { Label } from "@/components/ui/label";
-import { Search, Filter } from "lucide-react";
+import { Search, Filter, Loader2 } from "lucide-react";
 import { useTranslation } from "react-i18next";
+import { useProducts } from "@/hooks/useProducts";
 
 const ProductList = () => {
   const { t } = useTranslation();
-  const inventory = inventoryData as Inventory;
+  const { data: inventory, isLoading, isError, error } = useProducts();
   const [searchQuery, setSearchQuery] = useState("");
   const [selectedBrand, setSelectedBrand] = useState<string>("all");
   const [sortBy, setSortBy] = useState<string>("name-asc");
   const [showOnlyAvailable, setShowOnlyAvailable] = useState(false);
 
   const brands = useMemo(() => {
+    if (!inventory) return [];
     const brandSet = new Set(inventory.items.map((p) => p.brand));
     return Array.from(brandSet).sort();
-  }, [inventory.items]);
+  }, [inventory]);
 
   const filteredProducts = useMemo(() => {
+    if (!inventory) return [];
     let filtered = inventory.items;
 
     if (searchQuery) {
@@ -70,7 +71,33 @@ const ProductList = () => {
     });
 
     return sorted;
-  }, [inventory.items, searchQuery, selectedBrand, sortBy, showOnlyAvailable]);
+  }, [inventory, searchQuery, selectedBrand, sortBy, showOnlyAvailable]);
+
+  if (isLoading) {
+    return (
+      <div className="container py-8 flex items-center justify-center min-h-[400px]">
+        <div className="text-center">
+          <Loader2 className="h-8 w-8 animate-spin mx-auto mb-4" />
+          <p className="text-muted-foreground">{t("loading") || "Loading products..."}</p>
+        </div>
+      </div>
+    );
+  }
+
+  if (isError) {
+    return (
+      <div className="container py-8 flex items-center justify-center min-h-[400px]">
+        <div className="text-center">
+          <p className="text-xl font-semibold text-destructive mb-2">
+            {t("error") || "Error loading products"}
+          </p>
+          <p className="text-muted-foreground">
+            {error instanceof Error ? error.message : "An unexpected error occurred"}
+          </p>
+        </div>
+      </div>
+    );
+  }
 
   return (
     <div className="container py-8">
