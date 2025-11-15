@@ -22,7 +22,7 @@ This project is built with:
 
 ```sh
 # Navigate to the project directory
-cd simple-cart
+cd shop-lendo
 
 # Install dependencies
 npm install
