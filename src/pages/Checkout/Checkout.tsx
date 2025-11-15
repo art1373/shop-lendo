@@ -59,12 +59,6 @@ const Checkout = () => {
         // Clear the cart
         clearCart();
 
-        // Show success message
-        toast({
-          title: "Payment Successful!",
-          description: "Thank you for your purchase.",
-        });
-
         // Navigate to thank you page
         setTimeout(() => {
           navigate("/thank-you");
@@ -117,7 +111,7 @@ const Checkout = () => {
         <div className="lg:col-span-2 space-y-4">
           {items.map((item) => (
             <Card key={`${item.productId}-${item.variantKey}`}>
-              <CardContent className="p-4">
+              <CardContent className="p-2 md:p-6">
                 <div className="flex gap-4">
                   <div className="w-24 h-24 bg-muted rounded-lg flex items-center justify-center shrink-0">
                     {getProductImage(item.productId) ? (

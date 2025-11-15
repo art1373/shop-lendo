@@ -167,7 +167,7 @@ const ProductDetails = () => {
             <CardHeader>
               <CardTitle>{t("productDetails")}</CardTitle>
             </CardHeader>
-            <CardContent className="space-y-2">
+            <CardContent className="p-2 md:p-6 pt-0 space-y-2">
               <p className="text-sm">
                 <span className="font-medium">{t("weight")}:</span>{" "}
                 {product.weight} {t("kg")}
@@ -185,7 +185,7 @@ const ProductDetails = () => {
                 <CardTitle>{t("selectOptions")}</CardTitle>
                 <CardDescription>{t("chooseVariant")}</CardDescription>
               </CardHeader>
-              <CardContent className="space-y-4">
+              <CardContent className="p-2 md:p-6 pt-0 space-y-4">
                 {variantKeys.map((key) => (
                   <div key={key}>
                     <label className="text-sm font-medium capitalize mb-2 block">
