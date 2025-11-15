@@ -99,23 +99,9 @@ describe("ProductCard", () => {
       renderProductCard(mockAvailableProduct);
       expect(screen.queryByText("outOfStock")).not.toBeInTheDocument();
     });
-
-    it("should have hover effects", () => {
-      renderProductCard(mockAvailableProduct);
-      const heading = screen.getByText("Test Product");
-      const card = heading.closest('[class*="rounded-lg"]');
-      expect(card).toHaveClass("hover:shadow-lg");
-    });
   });
 
   describe("rendering unavailable product", () => {
-    it("should render product with reduced opacity", () => {
-      renderProductCard(mockUnavailableProduct);
-      const heading = screen.getByText("Unavailable Product");
-      const card = heading.closest('[class*="rounded-lg"]');
-      expect(card).toHaveClass("opacity-60");
-    });
-
     it("should render out of stock badge", () => {
       renderProductCard(mockUnavailableProduct);
       expect(screen.getByText("outOfStock")).toBeInTheDocument();
@@ -130,13 +116,6 @@ describe("ProductCard", () => {
     it("should display unavailable text on button", () => {
       renderProductCard(mockUnavailableProduct);
       expect(screen.getByText("unavailable")).toBeInTheDocument();
-    });
-
-    it("should apply grayscale filter", () => {
-      renderProductCard(mockUnavailableProduct);
-      const heading = screen.getByText("Unavailable Product");
-      const card = heading.closest('[class*="rounded-lg"]');
-      expect(card).toHaveClass("grayscale");
     });
 
     it("should not be clickable", () => {

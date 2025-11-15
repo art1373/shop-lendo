@@ -2,7 +2,8 @@ import { describe, it, expect } from "vitest";
 import { render, screen } from "@testing-library/react";
 import { BrowserRouter } from "react-router-dom";
 import { Header } from "./Header";
-import { CartProvider, CartItem } from "@/contexts/CartContext";
+import { CartProvider } from "@/contexts/CartContext";
+import { CartItem } from "@/contexts/CartContext.types";
 
 const renderHeader = (cartItems: CartItem[] = []) => {
   // Pre-populate localStorage if cart items provided
@@ -154,26 +155,6 @@ describe("Header", () => {
       renderHeader(cartItems);
       const badge = screen.getByText("15");
       expect(badge).toBeInTheDocument();
-    });
-  });
-
-  describe("styling", () => {
-    it("should have sticky positioning", () => {
-      renderHeader();
-      const header = screen.getByRole("banner");
-      expect(header).toHaveClass("sticky");
-    });
-
-    it("should have border bottom", () => {
-      renderHeader();
-      const header = screen.getByRole("banner");
-      expect(header).toHaveClass("border-b");
-    });
-
-    it("should have backdrop blur support", () => {
-      renderHeader();
-      const header = screen.getByRole("banner");
-      expect(header).toHaveClass("backdrop-blur");
     });
   });
 

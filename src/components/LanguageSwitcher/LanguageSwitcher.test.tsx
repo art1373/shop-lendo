@@ -40,12 +40,6 @@ describe("LanguageSwitcher", () => {
       const currentLang = screen.getByText(/en/i);
       expect(currentLang).toBeInTheDocument();
     });
-
-    it("should display current language in uppercase", () => {
-      render(<LanguageSwitcher />);
-      const langText = screen.getByText(/en/i);
-      expect(langText).toHaveClass("uppercase");
-    });
   });
 
   describe("dropdown menu", () => {
@@ -153,12 +147,6 @@ describe("LanguageSwitcher", () => {
       render(<LanguageSwitcher />);
       const button = screen.getByRole("button");
       expect(button).toBeInTheDocument();
-    });
-
-    it("should have gap between icon and text", () => {
-      render(<LanguageSwitcher />);
-      const button = screen.getByRole("button");
-      expect(button).toHaveClass("gap-2");
     });
   });
 

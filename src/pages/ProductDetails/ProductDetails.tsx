@@ -1,4 +1,4 @@
-import { useState, useEffect } from "react";
+import { useState } from "react";
 import { useParams, useNavigate } from "react-router-dom";
 import { ArrowLeft, ShoppingCart, Check, Loader2 } from "lucide-react";
 import { Button } from "@/components/ui/button";
@@ -13,7 +13,8 @@ import { Badge } from "@/components/ui/badge";
 import { useCart } from "@/contexts/CartContext";
 import { useToast } from "@/hooks/use-toast";
 import { useProducts } from "@/hooks/useProducts";
-import { Product, ProductOption } from "@/types/product";
+import { useProductVariantSelection } from "@/hooks/useProductVariantSelection";
+import { ProductOption } from "@/types/product";
 import { getProductImage } from "@/utils/productImages";
 import { formatPrice } from "@/utils/formatPrice";
 import { useTranslation } from "react-i18next";
@@ -27,61 +28,9 @@ const ProductDetails = () => {
   const { data: inventory, isLoading, isError, error } = useProducts();
 
   const product = inventory?.items.find((p) => p.id === Number(id));
-  const [selectedVariant, setSelectedVariant] = useState<
-    Record<string, string>
-  >({});
-  const [selectedOption, setSelectedOption] = useState<ProductOption | null>(
-    null
-  );
+  const { selectedVariant, setSelectedVariant, selectedOption } =
+    useProductVariantSelection(product);
   const [showSuccess, setShowSuccess] = useState(false);
-
-  useEffect(() => {
-    if (!product) return;
-
-    // Initialize with first available option
-    const firstOption = product.options.find((opt) => opt.quantity > 0);
-    if (firstOption) {
-      const initialVariant: Record<string, string> = {};
-      Object.keys(firstOption).forEach((key) => {
-        if (key !== "quantity") {
-          const value = firstOption[key as keyof ProductOption];
-          if (Array.isArray(value)) {
-            initialVariant[key] = String(value[0]);
-          } else if (typeof value === "string") {
-            initialVariant[key] = value;
-          } else if (typeof value === "number") {
-            initialVariant[key] = String(value);
-          }
-        }
-      });
-      setSelectedVariant(initialVariant);
-    }
-  }, [product]);
-
-  useEffect(() => {
-    if (!product) return;
-
-    // Find matching option based on selected variants
-    const matchingOption = product.options.find((option) => {
-      return Object.keys(selectedVariant).every((key) => {
-        const optionValue = option[key as keyof ProductOption];
-        const selectedValue = selectedVariant[key];
-
-        if (Array.isArray(optionValue)) {
-          return optionValue.some((v) => String(v) === selectedValue);
-        }
-        if (typeof optionValue === "string") {
-          return optionValue === selectedValue;
-        }
-        if (typeof optionValue === "number") {
-          return String(optionValue) === selectedValue;
-        }
-        return false;
-      });
-    });
-
-    setSelectedOption(matchingOption || null);
-  }, [selectedVariant, product]);
 
   if (isLoading) {
     return (
