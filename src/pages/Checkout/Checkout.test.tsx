@@ -4,7 +4,7 @@ import userEvent from "@testing-library/user-event";
 import { BrowserRouter } from "react-router-dom";
 import Checkout from "./Checkout";
 import { CartProvider } from "@/contexts/CartContext";
-import { CartItem } from "@/contexts/CartContext";
+import { CartItem } from "@/contexts/CartContext.types";
 
 const mockNavigate = vi.fn();
 vi.mock("react-router-dom", async () => {

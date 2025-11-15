@@ -55,6 +55,9 @@ vi.mock("lucide-react", () => {
       MockIcon({ "data-testid": "chevron-up-icon", ...props }),
     Loader2: (props: any) =>
       MockIcon({ "data-testid": "loader2-icon", ...props }),
+    CheckCircle: (props: any) =>
+      MockIcon({ "data-testid": "check-circle-icon", ...props }),
+    Home: (props: any) => MockIcon({ "data-testid": "home-icon", ...props }),
   };
 });
 

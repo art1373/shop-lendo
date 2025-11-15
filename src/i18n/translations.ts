@@ -4,7 +4,7 @@ export const translations = {
       // Header
       products: "Products",
       cart: "Cart",
-      
+
       // Product List
       ourProducts: "Our Products",
       browseProducts: "Browse our selection of quality tech products",
@@ -19,13 +19,13 @@ export const translations = {
       noResults: "No products found",
       tryDifferentSearch: "Try a different search term or filter",
       showOnlyAvailable: "Show only available products",
-      
+
       // Product Card
       outOfStock: "Out of Stock",
       weight: "Weight",
       addToCart: "Add to Cart",
       unavailable: "Unavailable",
-      
+
       // Product Details
       backToProducts: "Back to Products",
       productImage: "Product Image",
@@ -38,7 +38,7 @@ export const translations = {
       addedToCart: "Added to Cart",
       addedToCartDesc: "has been added to your cart.",
       selectedVariantOutOfStock: "Selected variant is out of stock",
-      
+
       // Checkout
       shoppingCart: "Shopping Cart",
       cartEmpty: "Your cart is empty",
@@ -50,8 +50,9 @@ export const translations = {
       shipping: "Shipping",
       calculatedAtCheckout: "Calculated at checkout",
       total: "Total",
-      proceedToCheckout: "Proceed to Checkout",
-      
+      proceedToCheckout: "Proceed to Buy",
+      processingPayment: "Processing Payment",
+
       // Common
       kg: "kg",
       currency: "SEK",
@@ -62,7 +63,7 @@ export const translations = {
       // Header
       products: "Produkter",
       cart: "Varukorg",
-      
+
       // Product List
       ourProducts: "Våra Produkter",
       browseProducts: "Bläddra bland vårt urval av kvalitetsteknik",
@@ -77,13 +78,13 @@ export const translations = {
       noResults: "Inga produkter hittades",
       tryDifferentSearch: "Prova en annan sökterm eller filter",
       showOnlyAvailable: "Visa endast tillgängliga produkter",
-      
+
       // Product Card
       outOfStock: "Slut i Lager",
       weight: "Vikt",
       addToCart: "Lägg till i Varukorg",
       unavailable: "Ej tillgänglig",
-      
+
       // Product Details
       backToProducts: "Tillbaka till Produkter",
       productImage: "Produktbild",
@@ -96,7 +97,7 @@ export const translations = {
       addedToCart: "Tillagd i Varukorg",
       addedToCartDesc: "har lagts till i din varukorg.",
       selectedVariantOutOfStock: "Vald variant är slut i lager",
-      
+
       // Checkout
       shoppingCart: "Varukorg",
       cartEmpty: "Din varukorg är tom",
@@ -108,8 +109,9 @@ export const translations = {
       shipping: "Frakt",
       calculatedAtCheckout: "Beräknas vid kassan",
       total: "Totalt",
-      proceedToCheckout: "Gå till Kassan",
-      
+      proceedToCheckout: "Slutför köp",
+      processingPayment: "Bearbetar betalning",
+
       // Common
       kg: "kg",
       currency: "kr",

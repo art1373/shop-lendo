@@ -1,4 +1,6 @@
-import { Minus, Plus, Trash2, ShoppingBag } from "lucide-react";
+import { useState } from "react";
+import { useToast } from "@/hooks/use-toast";
+import { Minus, Plus, Trash2, ShoppingBag, Loader2 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import {
   Card,
@@ -13,11 +15,17 @@ import { useNavigate } from "react-router-dom";
 import { formatPrice } from "@/utils/formatPrice";
 import { useTranslation } from "react-i18next";
 import { getProductImage } from "@/utils/productImages";
+import {
+  processMockPayment,
+  saveOrderDetails,
+} from "@/utils/mockStripePayment";
 
 const Checkout = () => {
-  const { items, removeItem, updateQuantity } = useCart();
+  const { items, removeItem, updateQuantity, clearCart } = useCart();
   const navigate = useNavigate();
   const { t } = useTranslation();
+  const { toast } = useToast();
+  const [isProcessing, setIsProcessing] = useState(false);
 
   const subtotal = items.reduce(
     (sum, item) => sum + Number(item.price) * item.quantity,
@@ -31,6 +39,53 @@ const Checkout = () => {
         return `${key}: ${displayValue}`;
       })
       .join(" | ");
+  };
+
+  const proceedToCheckout = async () => {
+    setIsProcessing(true);
+
+    try {
+      const result = await processMockPayment();
+
+      if (result.success && result.transactionId) {
+        // Save order details
+        saveOrderDetails({
+          items,
+          total: subtotal,
+          transactionId: result.transactionId,
+          timestamp: new Date().toISOString(),
+        });
+
+        // Clear the cart
+        clearCart();
+
+        // Show success message
+        toast({
+          title: "Payment Successful!",
+          description: "Thank you for your purchase.",
+        });
+
+        // Navigate to thank you page
+        setTimeout(() => {
+          navigate("/thank-you");
+        }, 500);
+      } else {
+        // Show error message
+        toast({
+          title: "Payment Failed",
+          description: result.error || "Please try again.",
+          variant: "destructive",
+        });
+      }
+    } catch (error) {
+      toast({
+        title: "Payment Error",
+        description: "An unexpected error occurred. Please try again.",
+        variant: "destructive",
+      });
+    } finally {
+      setIsProcessing(false);
+    }
   };
 
   if (items.length === 0) {
@@ -173,8 +228,20 @@ const Checkout = () => {
               </div>
             </CardContent>
             <CardFooter>
-              <Button size="lg" className="w-full">
-                {t("proceedToCheckout")}
+              <Button
+                size="lg"
+                className="w-full"
+                onClick={proceedToCheckout}
+                disabled={isProcessing}
+              >
+                {isProcessing ? (
+                  <>
+                    <Loader2 className="h-5 w-5 mr-2 animate-spin" />
+                    {t("processingPayment")}
+                  </>
+                ) : (
+                  t("proceedToCheckout")
+                )}
               </Button>
             </CardFooter>
           </Card>
