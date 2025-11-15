@@ -117,8 +117,8 @@ const Checkout = () => {
         <div className="lg:col-span-2 space-y-4">
           {items.map((item) => (
             <Card key={`${item.productId}-${item.variantKey}`}>
-              <CardContent className="p-6">
-                <div className="flex gap-6">
+              <CardContent className="p-4">
+                <div className="flex gap-4">
                   <div className="w-24 h-24 bg-muted rounded-lg flex items-center justify-center shrink-0">
                     {getProductImage(item.productId) ? (
                       <img
