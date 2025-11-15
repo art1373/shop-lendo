@@ -1,5 +1,5 @@
 import { useState, useMemo } from "react";
-import { ProductCard } from "@/components/ProductCard";
+import { ProductCard } from "@/components/ProductCard/ProductCard";
 import { Input } from "@/components/ui/input";
 import {
   Select,
@@ -78,7 +78,9 @@ const ProductList = () => {
       <div className="container py-8 flex items-center justify-center min-h-[400px]">
         <div className="text-center">
           <Loader2 className="h-8 w-8 animate-spin mx-auto mb-4" />
-          <p className="text-muted-foreground">{t("loading") || "Loading products..."}</p>
+          <p className="text-muted-foreground">
+            {t("loading") || "Loading products..."}
+          </p>
         </div>
       </div>
     );
@@ -92,7 +94,9 @@ const ProductList = () => {
             {t("error") || "Error loading products"}
           </p>
           <p className="text-muted-foreground">
-            {error instanceof Error ? error.message : "An unexpected error occurred"}
+            {error instanceof Error
+              ? error.message
+              : "An unexpected error occurred"}
           </p>
         </div>
       </div>

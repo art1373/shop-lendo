@@ -2,7 +2,7 @@ import { ShoppingCart } from "lucide-react";
 import { Link } from "react-router-dom";
 import { useCart } from "@/contexts/CartContext";
 import { Badge } from "@/components/ui/badge";
-import { LanguageSwitcher } from "./LanguageSwitcher";
+import { LanguageSwitcher } from "../LanguageSwitcher/LanguageSwitcher";
 import { useTranslation } from "react-i18next";
 
 export const Header = () => {
