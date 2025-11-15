@@ -11,7 +11,6 @@ vi.mock("@/hooks/use-toast", () => ({
   useToast: () => ({ toast: mockToast }),
 }));
 
-// Mock inventory data
 vi.mock("@/data/inventory.json", () => ({
   default: {
     items: [

@@ -5,7 +5,6 @@ import { LanguageSwitcher } from "./LanguageSwitcher";
 
 const mockChangeLanguage = vi.fn();
 
-// Override the mock for this specific test file
 vi.mock("react-i18next", () => ({
   useTranslation: () => ({
     t: (key: string) => key,

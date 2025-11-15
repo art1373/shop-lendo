@@ -48,7 +48,6 @@ const Checkout = () => {
       const result = await processMockPayment();
 
       if (result.success && result.transactionId) {
-        // Save order details
         saveOrderDetails({
           items,
           total: subtotal,
@@ -56,15 +55,12 @@ const Checkout = () => {
           timestamp: new Date().toISOString(),
         });
 
-        // Clear the cart
         clearCart();
 
-        // Navigate to thank you page
         setTimeout(() => {
           navigate("/thank-you");
         }, 500);
       } else {
-        // Show error message
         toast({
           title: "Payment Failed",
           description: result.error || "Please try again.",

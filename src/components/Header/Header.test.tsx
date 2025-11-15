@@ -6,7 +6,6 @@ import { CartProvider } from "@/contexts/CartContext";
 import { CartItem } from "@/contexts/CartContext.types";
 
 const renderHeader = (cartItems: CartItem[] = []) => {
-  // Pre-populate localStorage if cart items provided
   if (cartItems.length > 0) {
     localStorage.setItem("cart", JSON.stringify(cartItems));
   }

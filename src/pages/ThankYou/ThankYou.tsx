@@ -18,14 +18,12 @@ const ThankYou = () => {
   const [orderDetails, setOrderDetails] = useState(getLastOrderDetails());
 
   useEffect(() => {
-    // If no order details, redirect to home
     if (!orderDetails) {
       navigate("/");
     }
   }, [orderDetails, navigate]);
 
   const handleBackToHome = () => {
-    // Clear order details when going back home
     clearLastOrderDetails();
     navigate("/");
   };

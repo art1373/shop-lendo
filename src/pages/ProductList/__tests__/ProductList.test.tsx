@@ -6,7 +6,6 @@ import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import ProductList from "../ProductList";
 import { CartProvider } from "@/contexts/CartContext";
 
-// Mock inventory data
 const mockInventoryData = {
   items: [
     {
@@ -57,10 +56,8 @@ const mockInventoryData = {
   ],
 };
 
-// Create a mock function
 const mockUseProducts = vi.fn();
 
-// Mock the useProducts hook
 vi.mock("@/hooks/useProducts", () => ({
   useProducts: () => mockUseProducts(),
 }));
@@ -89,7 +86,6 @@ const renderProductList = () => {
 
 describe("ProductList", () => {
   beforeEach(() => {
-    // Reset mock to default successful state before each test
     mockUseProducts.mockReturnValue({
       data: mockInventoryData,
       isLoading: false,
@@ -468,11 +464,7 @@ describe("ProductList", () => {
   });
 
   describe("React Query integration", () => {
-    // Note: Loading state test removed due to Loader2 icon mocking complexity
-    // The loading functionality is covered by the actual implementation
-
     it("should show error state", () => {
-      // Override the mock for this specific test - reset then set
       mockUseProducts.mockReset().mockReturnValue({
         data: undefined,
         isLoading: false,
@@ -485,7 +477,6 @@ describe("ProductList", () => {
 
       renderProductList();
 
-      // The component shows t("error") which returns "error" in the test, not "Error loading products"
       expect(screen.getByText(/error/i)).toBeInTheDocument();
       expect(screen.getByText(/Failed to fetch products/i)).toBeInTheDocument();
     });

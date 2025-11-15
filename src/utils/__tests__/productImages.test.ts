@@ -1,7 +1,6 @@
 import { describe, it, expect, vi } from "vitest";
 import { getProductImage, productImages } from "../productImages";
 
-// Mock image imports
 vi.mock("@/assets/products/philips-hue.jpg", () => ({ default: "/mock/philips-hue.jpg" }));
 vi.mock("@/assets/products/ikea-tradfri.jpg", () => ({ default: "/mock/ikea-tradfri.jpg" }));
 vi.mock("@/assets/products/ps4.jpg", () => ({ default: "/mock/ps4.jpg" }));
