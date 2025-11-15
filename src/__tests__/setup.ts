@@ -53,6 +53,8 @@ vi.mock("lucide-react", () => {
       MockIcon({ "data-testid": "chevron-down-icon", ...props }),
     ChevronUp: (props: any) =>
       MockIcon({ "data-testid": "chevron-up-icon", ...props }),
+    Loader2: (props: any) =>
+      MockIcon({ "data-testid": "loader2-icon", ...props }),
   };
 });
 

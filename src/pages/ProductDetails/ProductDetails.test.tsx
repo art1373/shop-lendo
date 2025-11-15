@@ -2,6 +2,7 @@ import { describe, it, expect, vi, beforeEach } from "vitest";
 import { render, screen, waitFor } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
 import { BrowserRouter, Route, Routes } from "react-router-dom";
+import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import ProductDetails from "./ProductDetails";
 import { CartProvider } from "@/contexts/CartContext";
 
@@ -63,14 +64,24 @@ vi.mock("react-router-dom", async () => {
 const renderProductDetails = (productId: string = "1") => {
   window.history.pushState({}, "Test page", `/product/${productId}`);
 
+  const queryClient = new QueryClient({
+    defaultOptions: {
+      queries: {
+        retry: false,
+      },
+    },
+  });
+
   return render(
-    <BrowserRouter>
-      <CartProvider>
-        <Routes>
-          <Route path="/product/:id" element={<ProductDetails />} />
-        </Routes>
-      </CartProvider>
-    </BrowserRouter>
+    <QueryClientProvider client={queryClient}>
+      <BrowserRouter>
+        <CartProvider>
+          <Routes>
+            <Route path="/product/:id" element={<ProductDetails />} />
+          </Routes>
+        </CartProvider>
+      </BrowserRouter>
+    </QueryClientProvider>
   );
 };
 
@@ -82,100 +93,132 @@ describe("ProductDetails", () => {
   });
 
   describe("rendering valid product", () => {
-    it("should render product name", () => {
+    it("should render product name", async () => {
       renderProductDetails("1");
-      expect(screen.getByText("Philips Hue")).toBeInTheDocument();
-    });
-
-    it("should render product brand", () => {
-      renderProductDetails("1");
-      expect(screen.getByText("Philips")).toBeInTheDocument();
-    });
-
-    it("should render formatted price", () => {
-      renderProductDetails("1");
-      expect(screen.getByText(/299/)).toBeInTheDocument();
-    });
-
-    it("should render product weight", () => {
-      renderProductDetails("1");
-      expect(screen.getByText(/0.2/)).toBeInTheDocument();
-    });
-
-    it("should render total stock", () => {
-      renderProductDetails("1");
-      expect(screen.getByText(/15/)).toBeInTheDocument(); // 10 + 5
-    });
-
-    it("should render product image", () => {
-      renderProductDetails("1");
-      const image = screen.getByAltText("Philips Hue");
-      expect(image).toBeInTheDocument();
-    });
-
-    it("should render back button", () => {
-      renderProductDetails("1");
-      const backButton = screen.getByRole("button", {
-        name: /backToProducts/i,
+      await waitFor(() => {
+        expect(screen.getByText("Philips Hue")).toBeInTheDocument();
       });
-      expect(backButton).toBeInTheDocument();
     });
 
-    it("should render add to cart button", () => {
+    it("should render product brand", async () => {
       renderProductDetails("1");
-      const addButton = screen.getByRole("button", { name: /addToCart/i });
-      expect(addButton).toBeInTheDocument();
+      await waitFor(() => {
+        expect(screen.getByText("Philips")).toBeInTheDocument();
+      });
     });
 
-    it("should render product details section", () => {
+    it("should render formatted price", async () => {
       renderProductDetails("1");
-      expect(screen.getByText("productDetails")).toBeInTheDocument();
+      await waitFor(() => {
+        expect(screen.getByText(/299/)).toBeInTheDocument();
+      });
+    });
+
+    it("should render product weight", async () => {
+      renderProductDetails("1");
+      await waitFor(() => {
+        expect(screen.getByText(/0.2/)).toBeInTheDocument();
+      });
+    });
+
+    it("should render total stock", async () => {
+      renderProductDetails("1");
+      await waitFor(() => {
+        expect(screen.getByText(/15/)).toBeInTheDocument(); // 10 + 5
+      });
+    });
+
+    it("should render product image", async () => {
+      renderProductDetails("1");
+      await waitFor(() => {
+        const image = screen.getByAltText("Philips Hue");
+        expect(image).toBeInTheDocument();
+      });
+    });
+
+    it("should render back button", async () => {
+      renderProductDetails("1");
+      await waitFor(() => {
+        const backButton = screen.getByRole("button", {
+          name: /backToProducts/i,
+        });
+        expect(backButton).toBeInTheDocument();
+      });
+    });
+
+    it("should render add to cart button", async () => {
+      renderProductDetails("1");
+      await waitFor(() => {
+        const addButton = screen.getByRole("button", { name: /addToCart/i });
+        expect(addButton).toBeInTheDocument();
+      });
+    });
+
+    it("should render product details section", async () => {
+      renderProductDetails("1");
+      await waitFor(() => {
+        expect(screen.getByText("productDetails")).toBeInTheDocument();
+      });
     });
   });
 
   describe("rendering unavailable product", () => {
-    it("should show out of stock badge", () => {
+    it("should show out of stock badge", async () => {
       renderProductDetails("3");
-      expect(screen.getByText("outOfStock")).toBeInTheDocument();
+      await waitFor(() => {
+        expect(screen.getByText("outOfStock")).toBeInTheDocument();
+      });
     });
 
-    it("should disable add to cart button", () => {
+    it("should disable add to cart button", async () => {
       renderProductDetails("3");
-      const addButton = screen.getByRole("button", { name: /addToCart/i });
-      expect(addButton).toBeDisabled();
+      await waitFor(() => {
+        const addButton = screen.getByRole("button", { name: /addToCart/i });
+        expect(addButton).toBeDisabled();
+      });
     });
   });
 
   describe("variant selection", () => {
-    it("should display all variant options", () => {
+    it("should display all variant options", async () => {
       renderProductDetails("1");
 
-      expect(screen.getByText("selectOptions")).toBeInTheDocument();
-      expect(screen.getAllByText("color").length).toBeGreaterThan(0);
-      expect(screen.getAllByText("power").length).toBeGreaterThan(0);
+      await waitFor(() => {
+        expect(screen.getByText("selectOptions")).toBeInTheDocument();
+        expect(screen.getAllByText("color").length).toBeGreaterThan(0);
+        expect(screen.getAllByText("power").length).toBeGreaterThan(0);
+      });
     });
 
-    it("should display variant values as buttons", () => {
+    it("should display variant values as buttons", async () => {
       renderProductDetails("1");
 
-      const whiteButton = screen.getByRole("button", { name: "white" });
-      const colorButton = screen.getByRole("button", { name: "color" });
+      await waitFor(() => {
+        const whiteButton = screen.getByRole("button", { name: "white" });
+        const colorButton = screen.getByRole("button", { name: "color" });
 
-      expect(whiteButton).toBeInTheDocument();
-      expect(colorButton).toBeInTheDocument();
+        expect(whiteButton).toBeInTheDocument();
+        expect(colorButton).toBeInTheDocument();
+      });
     });
 
-    it("should pre-select first available variant", () => {
+    it("should pre-select first available variant", async () => {
       renderProductDetails("1");
 
-      const whiteButton = screen.getByRole("button", { name: "white" });
-      // First available option should be selected (indicated by styling)
-      expect(whiteButton).toBeInTheDocument();
+      await waitFor(() => {
+        const whiteButton = screen.getByRole("button", { name: "white" });
+        // First available option should be selected (indicated by styling)
+        expect(whiteButton).toBeInTheDocument();
+      });
     });
 
     it("should change selection when variant clicked", async () => {
       const user = userEvent.setup();
       renderProductDetails("1");
+
+      await waitFor(() => {
+        expect(screen.getByRole("button", { name: "color" })).toBeInTheDocument();
+      });
 
       const colorButton = screen.getByRole("button", { name: "color" });
       await user.click(colorButton);
@@ -184,16 +227,22 @@ describe("ProductDetails", () => {
       expect(colorButton).toBeInTheDocument();
     });
 
-    it("should display available quantity for selected variant", () => {
+    it("should display available quantity for selected variant", async () => {
       renderProductDetails("1");
 
-      // Should show quantity for first available option (white with 10)
-      expect(screen.getByText(/10/)).toBeInTheDocument();
+      await waitFor(() => {
+        // Should show quantity for first available option (white with 10)
+        expect(screen.getByText(/10/)).toBeInTheDocument();
+      });
     });
 
     it("should update available quantity when variant changes", async () => {
       const user = userEvent.setup();
       renderProductDetails("1");
+
+      await waitFor(() => {
+        expect(screen.getByRole("button", { name: "color" })).toBeInTheDocument();
+      });
 
       // Click color variant (has 5)
       const colorButton = screen.getByRole("button", { name: "color" });
@@ -205,16 +254,22 @@ describe("ProductDetails", () => {
       });
     });
 
-    it("should handle products with multiple variant types", () => {
+    it("should handle products with multiple variant types", async () => {
       renderProductDetails("2");
 
-      expect(screen.getByText("color")).toBeInTheDocument();
-      expect(screen.getByText("storage")).toBeInTheDocument();
+      await waitFor(() => {
+        expect(screen.getByText("color")).toBeInTheDocument();
+        expect(screen.getByText("storage")).toBeInTheDocument();
+      });
     });
 
     it("should show warning when selected variant is out of stock", async () => {
       const user = userEvent.setup();
       renderProductDetails("2");
+
+      await waitFor(() => {
+        expect(screen.getByRole("button", { name: "neon" })).toBeInTheDocument();
+      });
 
       // Select neon color which has 0 stock
       const neonButton = screen.getByRole("button", { name: "neon" });
@@ -233,6 +288,10 @@ describe("ProductDetails", () => {
       const user = userEvent.setup();
       renderProductDetails("1");
 
+      await waitFor(() => {
+        expect(screen.getByRole("button", { name: /addToCart/i })).toBeInTheDocument();
+      });
+
       const addButton = screen.getByRole("button", { name: /addToCart/i });
       await user.click(addButton);
 
@@ -245,6 +304,10 @@ describe("ProductDetails", () => {
     it("should show toast notification when adding to cart", async () => {
       const user = userEvent.setup();
       renderProductDetails("1");
+
+      await waitFor(() => {
+        expect(screen.getByRole("button", { name: /addToCart/i })).toBeInTheDocument();
+      });
 
       const addButton = screen.getByRole("button", { name: /addToCart/i });
       await user.click(addButton);
@@ -259,6 +322,10 @@ describe("ProductDetails", () => {
       const user = userEvent.setup();
       renderProductDetails("1");
 
+      await waitFor(() => {
+        expect(screen.getByRole("button", { name: /addToCart/i })).toBeInTheDocument();
+      });
+
       const addButton = screen.getByRole("button", { name: /addToCart/i });
       await user.click(addButton);
 
@@ -267,16 +334,22 @@ describe("ProductDetails", () => {
       });
     });
 
-    it("should disable button when product is unavailable", () => {
+    it("should disable button when product is unavailable", async () => {
       renderProductDetails("3");
 
-      const addButton = screen.getByRole("button", { name: /addToCart/i });
-      expect(addButton).toBeDisabled();
+      await waitFor(() => {
+        const addButton = screen.getByRole("button", { name: /addToCart/i });
+        expect(addButton).toBeDisabled();
+      });
     });
 
     it("should disable button when selected variant is out of stock", async () => {
       const user = userEvent.setup();
       renderProductDetails("2");
+
+      await waitFor(() => {
+        expect(screen.getByRole("button", { name: "neon" })).toBeInTheDocument();
+      });
 
       // Select neon which has 0 stock
       const neonButton = screen.getByRole("button", { name: "neon" });
@@ -291,6 +364,10 @@ describe("ProductDetails", () => {
     it("should add correct variant to cart", async () => {
       const user = userEvent.setup();
       renderProductDetails("1");
+
+      await waitFor(() => {
+        expect(screen.getByRole("button", { name: "color" })).toBeInTheDocument();
+      });
 
       // Select color variant
       const colorButton = screen.getByRole("button", { name: "color" });
@@ -309,6 +386,12 @@ describe("ProductDetails", () => {
       const user = userEvent.setup();
       renderProductDetails("1");
 
+      await waitFor(() => {
+        expect(screen.getByRole("button", {
+          name: /backToProducts/i,
+        })).toBeInTheDocument();
+      });
+
       const backButton = screen.getByRole("button", {
         name: /backToProducts/i,
       });
@@ -317,18 +400,26 @@ describe("ProductDetails", () => {
       expect(mockNavigate).toHaveBeenCalledWith("/");
     });
 
-    it("should handle non-existent product", () => {
+    it("should handle non-existent product", async () => {
       renderProductDetails("999");
 
-      expect(screen.getByText(/Product not found/i)).toBeInTheDocument();
-      expect(
-        screen.getByRole("button", { name: /Back to Products/i })
-      ).toBeInTheDocument();
+      await waitFor(() => {
+        expect(screen.getByText(/Product not found/i)).toBeInTheDocument();
+        expect(
+          screen.getByRole("button", { name: /Back to Products/i })
+        ).toBeInTheDocument();
+      });
     });
 
     it("should allow navigation back from non-existent product", async () => {
       const user = userEvent.setup();
       renderProductDetails("999");
+
+      await waitFor(() => {
+        expect(screen.getByRole("button", {
+          name: /Back to Products/i,
+        })).toBeInTheDocument();
+      });
 
       const backButton = screen.getByRole("button", {
         name: /Back to Products/i,
@@ -340,63 +431,79 @@ describe("ProductDetails", () => {
   });
 
   describe("stock display", () => {
-    it("should calculate total stock from all options", () => {
+    it("should calculate total stock from all options", async () => {
       renderProductDetails("1");
 
-      // Should show 15 total (10 + 5)
-      expect(screen.getByText(/15/)).toBeInTheDocument();
+      await waitFor(() => {
+        // Should show 15 total (10 + 5)
+        expect(screen.getByText(/15/)).toBeInTheDocument();
+      });
     });
 
-    it("should show 0 stock for unavailable product", () => {
+    it("should show 0 stock for unavailable product", async () => {
       renderProductDetails("3");
 
-      // Check for "0 units" in the stock display (multiple instances expected)
-      expect(screen.getAllByText(/0 units/i).length).toBeGreaterThan(0);
+      await waitFor(() => {
+        // Check for "0 units" in the stock display (multiple instances expected)
+        expect(screen.getAllByText(/0 units/i).length).toBeGreaterThan(0);
+      });
     });
 
-    it("should display stock per variant", () => {
+    it("should display stock per variant", async () => {
       renderProductDetails("1");
 
-      // Should show available stock for selected variant (e.g., "available: 10 units")
-      expect(screen.getByText(/available:.*\d+.*units/i)).toBeInTheDocument();
+      await waitFor(() => {
+        // Should show available stock for selected variant (e.g., "available: 10 units")
+        expect(screen.getByText(/available:.*\d+.*units/i)).toBeInTheDocument();
+      });
     });
   });
 
   describe("price display", () => {
-    it("should display formatted price", () => {
+    it("should display formatted price", async () => {
       renderProductDetails("1");
 
-      expect(screen.getByText(/299/)).toBeInTheDocument();
+      await waitFor(() => {
+        expect(screen.getByText(/299/)).toBeInTheDocument();
+      });
     });
 
-    it("should display currency", () => {
+    it("should display currency", async () => {
       renderProductDetails("1");
 
-      // Use getAllByText with regex since "currency" appears multiple times
-      expect(screen.getAllByText(/currency/i).length).toBeGreaterThan(0);
+      await waitFor(() => {
+        // Use getAllByText with regex since "currency" appears multiple times
+        expect(screen.getAllByText(/currency/i).length).toBeGreaterThan(0);
+      });
     });
   });
 
   describe("accessibility", () => {
-    it("should have proper heading hierarchy", () => {
+    it("should have proper heading hierarchy", async () => {
       renderProductDetails("1");
 
-      const productName = screen.getByText("Philips Hue");
-      expect(productName.tagName).toBe("H1");
+      await waitFor(() => {
+        const productName = screen.getByText("Philips Hue");
+        expect(productName.tagName).toBe("H1");
+      });
     });
 
-    it("should have accessible buttons", () => {
+    it("should have accessible buttons", async () => {
       renderProductDetails("1");
 
-      const buttons = screen.getAllByRole("button");
-      expect(buttons.length).toBeGreaterThan(0);
+      await waitFor(() => {
+        const buttons = screen.getAllByRole("button");
+        expect(buttons.length).toBeGreaterThan(0);
+      });
     });
 
-    it("should have alt text for images", () => {
+    it("should have alt text for images", async () => {
       renderProductDetails("1");
 
-      const image = screen.getByAltText("Philips Hue");
-      expect(image).toBeInTheDocument();
+      await waitFor(() => {
+        const image = screen.getByAltText("Philips Hue");
+        expect(image).toBeInTheDocument();
+      });
     });
   });
 
@@ -404,6 +511,10 @@ describe("ProductDetails", () => {
     it("should generate unique variant key for cart", async () => {
       const user = userEvent.setup();
       renderProductDetails("1");
+
+      await waitFor(() => {
+        expect(screen.getByRole("button", { name: /addToCart/i })).toBeInTheDocument();
+      });
 
       const addButton = screen.getByRole("button", { name: /addToCart/i });
       await user.click(addButton);
@@ -416,6 +527,10 @@ describe("ProductDetails", () => {
     it("should create different keys for different variants", async () => {
       const user = userEvent.setup();
       renderProductDetails("1");
+
+      await waitFor(() => {
+        expect(screen.getByRole("button", { name: /addToCart/i })).toBeInTheDocument();
+      });
 
       // Add first variant
       const addButton = screen.getByRole("button", { name: /addToCart/i });
@@ -436,17 +551,21 @@ describe("ProductDetails", () => {
   });
 
   describe("initialization", () => {
-    it("should initialize with first available option selected", () => {
+    it("should initialize with first available option selected", async () => {
       renderProductDetails("1");
 
-      // First option should be selected by default
-      expect(screen.getByText(/10/)).toBeInTheDocument(); // quantity of first option
+      await waitFor(() => {
+        // First option should be selected by default
+        expect(screen.getByText(/10/)).toBeInTheDocument(); // quantity of first option
+      });
     });
 
-    it("should handle products with no available options", () => {
+    it("should handle products with no available options", async () => {
       renderProductDetails("3");
 
-      expect(screen.getByText("outOfStock")).toBeInTheDocument();
+      await waitFor(() => {
+        expect(screen.getByText("outOfStock")).toBeInTheDocument();
+      });
     });
   });
 });
